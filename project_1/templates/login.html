@@ -1,0 +1,35 @@
+{% extends "navbar.html" %}
+
+{% block title %}login here{% endblock %}
+
+{% block content %}
+    
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="row justify-content-center">Arms Store</h4>
+                        <h4 class="mb-0">Login</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method = "post">
+                            {% csrf_token %} 
+                            <div class="form-group">
+                                <label for="username">Email</label>
+                                <input name = "email" type="text" id="email" class="form-control" >
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input name = "password" type="password" id="password" class="form-control">
+                            </div>
+                            <button  type="submit" class="btn btn-primary btn-block">Login</button>
+                            <a href="{% url 'userside:signup' %}" >Create a account</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+   

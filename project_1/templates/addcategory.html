@@ -1,0 +1,19 @@
+
+{% extends "admin_nav.html" %}
+
+{% block title %}Add Category{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h1>Add Category</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Category Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+        </div>
+        <button type="submit" class="btn btn-light">Add Category</button>
+        <a class="btn btn-light" href="{% url 'spadmin'%}">Home</a>
+    </form>
+</div>
+{% endblock %}

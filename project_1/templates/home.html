@@ -1,0 +1,42 @@
+{% extends "navbar.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+
+<section class="banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 my-4">
+                <div class="banner-text text-center">
+                    <h1 class="text-center my-5">Welcome to the Used iPhone Store</h1>
+                    <p class="text-center">Find the perfect used iPhone at unbeatable prices.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mobile-list">
+    <div class="container">
+        <div class="row">
+            {% for product in product %}
+            <div class="col-md-4 col-sm-12 ">
+                <div class="mobile-card  my-3 text-center">
+                    <img src="{{ product.image1.url }}" alt="{{ product.brand }} {{ product.model_name }}" class="img-fluid rounded col-12">
+                    <h2>{{ product.brand }} - {{ product.modelname }}</h2>
+                    
+                    <p>Storage: {{ product.storage }}</p>
+                    <p>Color: {{ product.color }}</p>
+                    <p>Price:₹{{ product.price }}</p>
+                    <a href="{% url 'userside:product' product.id %}" class="btn btn-primary">Shop Now</a>
+                    <a href="{% url 'userside:add_to_cart' product.id %}" class="btn btn-primary">ADD To Cart</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}

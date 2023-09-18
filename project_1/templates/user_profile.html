@@ -1,0 +1,44 @@
+{% extends 'navbar.html' %}
+{% block title %}Your Profile{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h2>My Profile</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Username:</strong> {{ user.username }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Email:</strong> {{ user.email }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Address:</strong>
+                        <address>
+                            {{ customer.address1 }}<br>
+                            {{ customer.address2 }}<br>
+                        </address>
+                    </div>
+                    <div class="mb-3">
+                        {% if request.user.profile_image %}
+                            <img src="{{ customer.profile_image.url }}" alt="Profile Image">
+                        {% else %}
+                        <p>No profile image available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <a class=" btn btn-primary btn-sm " href="{% url 'userside:add_profile_data'%}">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+

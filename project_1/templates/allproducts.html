@@ -1,0 +1,23 @@
+{% extends "admin_nav.html" %}
+
+{% block title %}All Products{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">All Products</h1>
+    {% for category in categories %}
+    <div class="mt-4">
+        <h2>{{ category.name }}s</h2>
+        <ul class="list-group">
+            {% for product in category.product_set.all %}
+            <li class="list-group-item">
+                {{ product.brand }} {{ product.modelname }} - {{ product.storage }}
+                <a href="{% url 'edit_data' product.id %}" class="btn btn-primary btn-sm ms-2">Edit</a>
+                <a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm">Delete</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

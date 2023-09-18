@@ -1,0 +1,42 @@
+
+{% extends "admin_nav.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">All Users</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Address 1</th>
+                <th>Address 2</th>
+                <th>Profile Image</th>
+                <th>Payment Method</th>
+                <th>UPI ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.address1 }}</td>
+                <td>{{ user.address2 }}</td>
+                <td>{% if request.user.profile_image %}
+                <img src="{{ customer.profile_image.url }}" alt="Profile Image">
+            {% else %}
+            <p>No profile image available.</p>
+            {% endif %}</td>
+                <td>{{ user.paymentmethod.payment_method }}</td>
+                <td>{{ user.paymentmethod.upi_id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
