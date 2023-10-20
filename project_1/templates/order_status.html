@@ -1,0 +1,55 @@
+<!-- order_confirmation.html -->
+
+{% extends 'navbar.html' %}
+
+{% block content %}
+
+<div class="container my-5 text-center">
+    
+
+    <h2>Ordered Items:</h2>
+    <table class="table table-bordered"> <!-- Add table-bordered class for border -->
+        <thead>
+            <tr>
+                <th>Product Image</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Product Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+                <tr>
+                    <td>
+                        <img src="{{ item.product.image1.url }}" alt="{{ item.product.product_name }} Image" class="img-fluid rounded col-3">
+                    </td>
+                    <td>
+                        {{ item.product.brand }} - {{ item.product.modelname }}
+                    </td>
+                    <td>
+                        {{ item.quantity }}
+                    </td>
+                    <td>
+                        Rs {{ item.product.price }}
+                    </td>
+                    <td>
+                        <a href="{% url 'userside:product' item.product.id %}" class="btn btn-primary">Details</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">Your Order Confirmed</h1>
+            <p class="card-text">Order Number: {{ order.pk }}</p>
+            <p class="card-text">Total Price: Rs - {{ order.total_price }} Rupees Only</p>
+        </div>
+    </div>
+    <a href="{% url 'userside:order_tracking' order.pk %}" class="btn btn-primary">Track Order</a>
+    <a href="{% url 'userside:cancel_order' order.pk %}" class="btn btn-danger">Cancel</a>
+</div>
+
+{% endblock %}
+

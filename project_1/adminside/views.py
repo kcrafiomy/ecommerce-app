@@ -1,83 +1,51 @@
-from django.shortcuts import render, redirect,HttpResponse
 # Import the  model on userside app
-from userside.models import Product ,Category,CustomUser,Supplier,Stock  
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate,login,logout
+from userside.models import Product ,Category,CustomUser,Supplier,Stock,Order,OrderItem ,DiscountCoupon 
 from django.views.decorators.cache import cache_control, never_cache
-from django.contrib import messages
+from django.shortcuts import render, redirect,HttpResponse
+from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-#----------------------------------------------------------------------------
-def SignUpPage(request):
-    if 'username' in request.session:
-        return redirect('spadmin')
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from datetime import datetime, timedelta
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.db.models import Sum
 
-    elif request.method == 'POST' :
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        pass1 = request.POST.get('password1')
-        pass2 = request.POST.get('password2')
-        
-        if not (username and email and pass1 and pass2):
-            messages.info(request,"Please fill required field")
-            return redirect('signup')
-    
-        elif pass1 != pass2:
-            messages.info(request,"Password mismatch")
-            return redirect('signup')
-       
-        else:
-            if CustomUser.objects.filter(username = username).exists():
-                messages.info(request,"Username Already Taken")
-                return redirect('signup')
-           
-            elif CustomUser.objects.filter(email = email).exists():
-                 messages.info(request,"Email Already Taken")
-                 return redirect('signup')
-            else:
-                my_user = CustomUser.objects.create_user(username=username, email=email, password=pass1)
-                my_user.save()
-            
-        return redirect('login')
-    return render(request,'signup.html')
- 
-@never_cache
-def LoginPage(request):
-    if 'username' in request.session:
-        return redirect('spadmin')
-    
-    if request.method == 'POST':
-        username = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request,email=username,password = password)
-
-        if user is not None:
-            request.session['username'] = username
-            login(request,user)
-            return redirect('spadmin')
-        else:
-            return HttpResponse("Username or Password is Incorrect!!!")
-  
-    return render(request,'login.html')
-
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@never_cache    
-def LogOutPage(request):
-    if 'username' in request.session:
-        logout(request)
-        return redirect('spadmin')
-    
-#-------------------------------------------------------------------
-
-from django.contrib.auth.decorators import login_required, user_passes_test
+# home page =============================================================================
 
 @login_required
 def adminhome(request):
     if request.user.is_staff:
-        return render(request, 'adminhome.html')
+        total_sale_amount = calculate_total_sale_amount() 
+        total_users = get_total_users_count() 
+        total_products = get_total_products_count()  
+        total_delivered_orders = get_total_delivered_orders_count()  
+
+        context = {
+            'total_sale_amount': total_sale_amount,
+            'total_users': total_users,
+            'total_products': total_products,
+            'total_delivered_orders': total_delivered_orders
+        }
+
+        return render(request, 'adminhome.html', context)
     else:
         return HttpResponse("You are not authorized to access this page.")
 
+def calculate_total_sale_amount():
+    return Order.objects.aggregate(total_sale=Sum('total_price'))['total_sale']
+
+def get_total_users_count():
+    return CustomUser.objects.count()
+
+def get_total_products_count():
+    return Product.objects.count()
+
+def get_total_delivered_orders_count():
+    return Order.objects.filter(order_status='delivered').count()
+
+# Category Section =================================================
 
 def category_list(request):
     categories = Category.objects.all()
@@ -92,6 +60,7 @@ def add_category(request):
             return redirect('category_list')  
     return render(request, 'addcategory.html')
 
+# All Products ======================================================
 def allproducts(request):
     categories = Category.objects.all()
     context = {'categories': categories}
@@ -129,7 +98,7 @@ def dataAdd(request):
                 product=product,
                 stock_count=stock_count
             )
-            return redirect('spadmin')  # Redirect to a product list page
+            return redirect('spadmin')  
         else:
             error_message = "Please fill in all required fields."
             categories = Category.objects.all()
@@ -178,11 +147,10 @@ def edit_data(request, product_id):
             product.category = category
             product.save()
 
-            # Update the existing stock count
             stock.stock_count = stock_count
             stock.save()
 
-            return redirect('spadmin')  # Redirect to a product list page
+            return redirect('spadmin')
         else:
             error_message = "Please fill in all required fields."
             categories = Category.objects.all()
@@ -201,9 +169,11 @@ def delete_product(request, product_id):
     product = Product.objects.get(pk=product_id)
     if request.method == 'POST':
         product.delete()
-        return redirect('spadmin') # Redirect to admin page after deletion
+        return redirect('spadmin') 
     context = {'product': product}
     return render(request, 'delete_product.html', context)
+
+# add supplier ============================================================
 
 def add_supplier(request):
     if request.method == 'POST':
@@ -242,3 +212,113 @@ def all_users(request):
     users = CustomUser.objects.all()
     context = {'users': users}
     return render(request, 'all_users.html', context)
+
+
+
+def delivery_sec(request):
+    orders = Order.objects.all()
+    context = { 'orders' : orders }
+    return render(request, 'delivery_sec.html', context)
+
+
+def update_delivery_status(request, order_id):
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        try :
+            order = Order.objects.get(pk=order_id)
+            order.order_status = status
+            order.save()
+            messages.success(request, 'Order has been successfully cancelled.')
+        
+
+        except Order.DoesNotExist:
+            messages.error(request, 'Order not found.')
+        return redirect('delivery')
+    return redirect('delivery')
+
+
+
+
+def generate_sales_report(request):
+    total_sales, last_month_sales, recent_orders = get_sales_data()
+
+    context = {
+        'total_sales': total_sales,
+        'last_month_sales': last_month_sales,
+        'recent_orders': recent_orders
+    }
+    return render(request, 'sales_report.html', context)
+
+# sales section ===========================================================================
+def get_sales_data():
+    # Retrieve all orders and calculate the total sales amount
+    total_sales = Order.objects.aggregate(total_sales=Sum('total_price'))['total_sales'] or 0
+
+    # Retrieve all orders in the last month and calculate the total sales amount
+    last_month = datetime.now() - timedelta(days=30)
+    last_month_sales = Order.objects.filter(order_date__gte=last_month).aggregate(last_month_sales=Sum('total_price'))['last_month_sales'] or 0
+
+    # Retrieve orders from the last 5 days
+    last_5_days = datetime.now() - timedelta(days=5)
+    recent_orders = Order.objects.filter(order_date__gte=last_5_days)
+
+    return total_sales, last_month_sales, recent_orders
+
+# Each user defs ============================================================================= 
+User = get_user_model()
+def block_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    user.is_active = False
+    user.save()
+    return redirect('all_users')  
+
+def unblock_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    user.is_active = True
+    user.save()
+    return redirect('all_users') 
+
+def make_superuser(request, user_id):
+    user = User.objects.get(pk=user_id)
+    user.is_staff = True
+    user.save()
+    return redirect('all_users') 
+
+def remove_superuser(request, user_id):
+    user = User.objects.get(pk=user_id)
+    user.is_staff = False
+    user.save()
+    return redirect('all_users') 
+
+
+# discont section ============================================================
+
+def discount_coupon(request):
+    coupons = DiscountCoupon.objects.all()
+    return render(request, 'discount_coupon.html', {'coupons': coupons})
+
+def add_coupon(request):
+    if request.method == 'POST':
+        discount_amount = request.POST.get('discount_amount')
+        valid_till = request.POST.get('valid_till')
+        category_id = request.POST.get('category_id', None)
+        product_id = request.POST.get('product_id', None)
+
+        category = Category.objects.get(pk=category_id) if category_id else None
+        product = Product.objects.get(pk=product_id) if product_id else None
+
+        coupon = DiscountCoupon(
+            discount_amount=discount_amount,
+            valid_till=valid_till,
+            category_id=category,
+            product_id=product
+        )
+        coupon.save()
+        return redirect('discount_coupon') 
+
+    coupons = DiscountCoupon.objects.all()
+    return render(request, 'discount_coupon.html', {'coupons': coupons})
+
+# ==================================================================================
+
+

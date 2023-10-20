@@ -1,0 +1,87 @@
+{% extends "navbar.html" %}
+
+{% block title %}order status Page{% endblock %}
+
+{% block content %}
+
+
+<div class="container" id="orderStatusContainer">
+    <h2>Order Status</h2>
+    <div class="row" id="orderStatusRow">
+        <div class="col-md-3" id="confirmedStatus">
+            <div class="status-item">
+                <p>Confirmed</p>
+                <div class="progress" id="confirmedProgress">
+                    <div class="progress-bar progress-bar-striped bg-success" style="width: 0%" id="confirmedProgressBar"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" id="shippedStatus">
+            <div class="status-item">
+                <p>Shipped</p>
+                <div class="progress" id="shippedProgress">
+                    <div class="progress-bar progress-bar-striped bg-primary" style="width: 0%" id="shippedProgressBar"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" id="deliveredStatus">
+            <div class="status-item">
+                <p>Delivered</p>
+                <div class="progress" id="deliveredProgress">
+                    <div class="progress-bar progress-bar-striped bg-info" style="width: 0%" id="deliveredProgressBar"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" id="cancelledStatus">
+            <div class="status-item">
+                <p>Cancelled</p>
+                <div class="progress" id="cancelledProgress">
+                    <div class="progress-bar progress-bar-striped bg-danger" style="width: 0%" id="cancelledProgressBar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container d-flex justify-content-center align-items-center" style="height: 50vh;">
+    <div>
+        <p>Status: {{ order.order_status }}</p>
+        <p>Expected Delivery Date: {{ order.order_date }}</p>
+        <p>Delivery Address: {{ order.shipping_address }}</p>
+        <a href="{% url 'userside:all_orders' %}" class="btn btn-primary">All Orders</a>
+    </div>
+</div>
+
+
+
+
+<script>
+    // Simulated order status data
+    const orderStatus = {
+        status: '{{ order.order_status }}'
+    };
+
+    // Update progress bars based on the order status
+    if (orderStatus.status === 'confirmed') {
+        document.getElementById('confirmedProgressBar').style.width = '100%';
+        document.getElementById('shippedProgressBar').style.width = '0%';
+        document.getElementById('deliveredProgressBar').style.width = '0%';
+        document.getElementById('cancelledProgressBar').style.width = '0%';
+    } else if (orderStatus.status === 'shipped') {
+        document.getElementById('confirmedProgressBar').style.width = '100%';
+        document.getElementById('shippedProgressBar').style.width = '100%';
+        document.getElementById('deliveredProgressBar').style.width = '0%';
+        document.getElementById('cancelledProgressBar').style.width = '0%';
+    } else if (orderStatus.status === 'delivered') {
+        document.getElementById('confirmedProgressBar').style.width = '100%';
+        document.getElementById('shippedProgressBar').style.width = '100%';
+        document.getElementById('deliveredProgressBar').style.width = '100%';
+        document.getElementById('cancelledProgressBar').style.width = '0%';
+    } else if (orderStatus.status === 'cancelled') {
+        document.getElementById('confirmedProgressBar').style.width = '0%';
+        document.getElementById('shippedProgressBar').style.width = '0%';
+        document.getElementById('deliveredProgressBar').style.width = '0%';
+        document.getElementById('cancelledProgressBar').style.width = '100%';
+    }
+</script>
+
+{% endblock content %}

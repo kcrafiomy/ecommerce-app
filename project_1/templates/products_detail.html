@@ -35,13 +35,40 @@
                 <p class="my-2"><strong>Storage Capacity:</strong> {{ product.storage }} GB</p>
                 <p class="my-2"><strong>Color:</strong> {{ product.color }}</p>
                 <p class="my-2"><strong>Price:</strong> ₹{{ product.price }}</p>
-                <p class="my-2"><strong>stock :</strong> {{ stock.stock_count}}</p>
-                <p class="my-2"><strong>description :</strong> {{ product.description}}</p>
-                
+                <p class="my-2"><strong>stock :</strong> {{ stock.stock_count }}</p>
+                <p class="my-2"><strong>Description:</strong> {{ product.description }}</p>
+                <p id="success-message-{{ product.id }}" style="display: none;"></p>
+                <a href="{% url 'userside:cart'%}" class="btn btn-primary">Go to Cart</a>
+                <button class="add-to-cart-btn btn btn-primary" data-product-id="{{ product.id }}">Add to Cart</button>
             </div>
         </div>
     </div>
-    {% endblock content%}
+    <!-- Add this section to display existing comments -->
+    <div class="container py-5">
+        <h3>Comments</h3>
+        {% for comment in comments %}
+        <div class="card my-3">
+            <div class="card-body">
+                <p class="card-text">{{ comment.comment }}</p>
+                <p class="card-text">Posted by: {{ comment.user.username }} at {{ comment.created_at }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    
+        <!-- Add this form for users to submit new comments -->
+        <form class="my-3" method="post" action="{% url 'userside:product_detail' product.id %}">
+            {% csrf_token %}
+            <h3>Leave a Comment</h3>
+            <div class="form-group">
+                <textarea class="form-control" name="comment" rows="4" cols="50" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Comment</button>
+        </form>
+    </div>
+{% include "all_ajax.html" %}
+
+{% endblock content%}
+
 
 
 

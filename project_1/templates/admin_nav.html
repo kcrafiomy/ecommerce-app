@@ -9,7 +9,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">ARMS Store</a>
+        <a class="navbar-brand" href="{% url 'spadmin'%}">ARMS Store</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -26,13 +26,16 @@
                     <a class="nav-link" href="{% url 'all_users'%}">all user</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Sale Report</a>
+                    <a class="nav-link" href="{% url 'sales_report'%}">Sale Report</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'supplier_list'%}">all supplire</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">All cards</a>
+                    <a class="nav-link" href="{% url 'discount_coupon'%}">All cards</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn" href="{% url 'userside:home'%}">User Side</a>
                 </li>
             </ul>
         </div>

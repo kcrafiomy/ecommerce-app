@@ -1,0 +1,58 @@
+{% extends "admin_nav.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Discount Coupons</h1>
+    <div class="row">
+        {% for coupon in coupons %}
+        <div class="col-md-4">
+            <div class="card my-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ coupon.code }}</h5>
+                    <p class="card-text">Discount Amount: {{ coupon.discount_amount }}</p>
+                    <p class="card-text">Valid Till: {{ coupon.valid_till }}</p>
+                    {% if coupon.category_id %}
+                        <p class="card-text">Category: {{ coupon.category_id.name }}</p>
+                    {% endif %}
+                    {% if coupon.product_id %}
+                        <p class="card-text">Product: {{ coupon.product_id.modelname }}</p>
+                        <img src="{{ coupon.product_id.image1.url }}" alt="Product Image" class="img-fluid">
+                    {% endif %}
+                </div>
+                
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Add New Coupon</h5>
+                    <form method="post" action="{% url 'add_coupon' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="couponCode">Product id:</label>
+                            <input type="text" class="form-control" id="product_id" name="product_id">
+                        </div>
+                        <div class="form-group">
+                            <label for="couponCode">Category id:</label>
+                            <input type="text" class="form-control" id="category_id" name="category_id">
+                        </div>
+                        <div class="form-group">
+                            <label for="discountAmount">Discount Amount:</label>
+                            <input type="text" class="form-control" id="discountAmount" name="discount_amount">
+                        </div>
+                        <div class="form-group">
+                            <label for="validTill">Valid Till:</label>
+                            <input type="date" class="form-control" id="validTill" name="valid_till">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Coupon</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

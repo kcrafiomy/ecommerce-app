@@ -5,21 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}nav bar{% endblock %}</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    
    
 </head>
 <body>
     <header class="my-5">
         <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-            <a class="navbar-brand" href="">ARMS Store</a>
+            <a class="navbar-brand" href="{%url 'userside:home' %}">ARMS Mobile</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse " id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        <input class="form-control mr-sm-2" type="text" placeholder="Search ..." aria-label="Search" id="search-form">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="search-button">Search</button>
+                        
                     </form>
                     <li class="nav-item active">
                         <a class="nav-link" href="{%url 'userside:home' %}">Home <span class="sr-only">(current)</span></a>
@@ -33,7 +37,10 @@
                         <a class="nav-link" href="{% url 'userside:cart' %}">My Cart</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{%url 'userside:logout'%}">Log out</a>
+                        <a class="nav-link" href="{%url 'userside:all_orders'%}">All Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="deleteProfile">Log out</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
@@ -49,19 +56,108 @@
             </div>
         </nav>
     </header>
+    <div class="row justify-content-center" >
+        <div id="search-results" class="col-8">
+        </div>
+    </div>
+    {% include "all_ajax.html" %}
+
+    <script>
+        document.getElementById("deleteProfile").addEventListener("click", function () {
+            if (confirm("Are you sure you want to sign out?")) {
+                // Add JavaScript logic to sign out here, e.g., make an AJAX request to log the user out
+                window.location.href = "{% url 'userside:logout' %}"; // Redirect to logout or any other appropriate page
+            }
+        });
+    </script>
+    
     {% block content %}{% endblock %}
-    <footer class="mt-5">
+
+    <footer class="footer">
         <div class="container text-center">
             {% if user.is_authenticated %}
-            <p>Welcome, {{ user.username }}</p>
-            <p>Email: {{ user.email }}</p>
+            <h5 class="text-secondary my-5">Welcome, {{ user.username }}</h5>
+            <p class="text-secondary">Email: {{ user.email }}</p>
             {% else %}
             <p>Welcome to Arms store. Please log in or sign up.</p>
             {% endif %}
-            <p>&copy; 2023 Arms Store. All rights reserved.</p>
+            <div class="row">
+                <div class="col-md-5 col-lg-4 order-last-md">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <div class="footer__widget">
+                                <h4 class="footer__widget-title">Customer Care</h4>
+                                <ul class="list-unstyled footer__link">
+                                    <li><a href="{% url 'userside:payment_methods'%}">Payment Methods</a></li>
+                                    <li><a href="{% url 'userside:payment_methods'%}">Delivery & Dispatch</a></li>
+                                    <li><a href="{% url 'userside:payment_methods'%}">Problems with Order</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="footer__widget">
+                                <h4 class="footer__widget-title">Customer Service</h4>
+                                <ul class="list-unstyled footer__link">
+                                    <li><a href="{% url 'userside:payment_methods'%}">Help Center</a></li>
+                                    <li><a href="{% url 'userside:payment_methods'%}">Contact Us</a></li>
+                                    <li><a href="{% url 'userside:payment_methods'%}">Policies & Rules</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 col-lg-8 order-first-md">
+                    <div class="footer__top-left">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="footer__widget">
+                                    <h4 class="footer__widget-title">My Account</h4>
+                                    <ul class="list-unstyled footer__link">
+                                        <li><a href="{% url 'userside:cart'%}">Checkout</a></li>
+                                        <li><a href="{% url 'userside:cart'%}">Shopping Cart</a></li>
+                                        <li><a href="{% url 'userside:payment_methods'%}">Wishlist</a></li>
+                                        <li><a href="{% url 'userside:payment_methods'%}">Terms & Conditions</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="footer__widget">
+                                    <h4 class="footer__widget-title">Quick Links</h4>
+                                    <ul class="list-unstyled footer__link">
+                                        <li><a href="{% url 'userside:payment_methods'%}">Store Location</a></li>
+                                        <li><a href="{% url 'userside:user_profile'%}">My account</a></li>
+                                        <li><a href="{% url 'userside:all_orders'%}">Order Tracking</a></li>
+                                        <li><a href="{% url 'userside:payment_methods'%}">FAQs</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer__bottom">
+            <div class="container">
+                <div class="footer__bottom-content pt-4 pb-3">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="payment-image text-center mb-3">
+                                <a href="contact.html"><img src="assets/img/payment/payment.png" alt=""></a>
+                            </div>
+                            <div class="copy-right-area text-center">
+                                <p>&copy; <span>Arms Store</span>. All Rights Reserved.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    
+                <!-- footer-end --> 
+    
+    
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

@@ -1,0 +1,125 @@
+<!-- code for add to cart without refresh -->
+<script>
+    $(document).ready(function () {
+    $('.add-to-cart-btn').unbind('click').click(function () {
+        var productId = $(this).data('product-id');
+        var csrfToken = "{{ csrf_token }}";
+        var successMessage = $('#success-message-' + productId); 
+
+        $.ajax({
+            type: "POST",
+            url: "/add_to_cart/" + productId + "/",
+            data: {
+                'product_id': productId,
+                csrfmiddlewaretoken: csrfToken,
+            },
+            success: function (data) {
+                successMessage.html(data.message).show(); 
+                setTimeout(function () {
+                    successMessage.hide();  
+                }, 3000); 
+            },
+            error: function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    });
+});
+
+</script>
+
+<!-- code for ingreese quantity and decreese quantity without refresh -->
+<script>
+    $(document).ready(function () {
+        $('.increase-quantity').click(function () {
+            var productId = $(this).data('product-id');
+            var csrfToken = "{{ csrf_token }}"; 
+            $.ajax({
+                type: 'POST',
+                url: '{% url "userside:increase_quantity" %}',
+                data: {
+                    'product_id': productId,
+                    csrfmiddlewaretoken: csrfToken,
+                },
+                success: function (data) {
+                    // Update the quantity in the UI
+                    $('#quantity-' + productId).text(data.quantity);
+                }
+            });
+        });
+
+        $('.decrease-quantity').click(function () {
+            var productId = $(this).data('product-id');
+            var csrfToken = "{{ csrf_token }}"; 
+            $.ajax({
+                type: 'POST',
+                url: '{% url "userside:decrease_quantity" %}',
+                data: {
+                    'product_id': productId,
+                    csrfmiddlewaretoken: csrfToken,
+                },
+                success: function (data) {
+                    // Update the quantity in the UI
+                    $('#quantity-' + productId).text(data.quantity);
+                }
+            });
+        });
+    });
+</script>
+
+
+<!-- search ajax file  -->
+<script>
+    $(document).ready(function () {
+        $('#search-form').on('input', function (e) {
+            e.preventDefault();
+            var query = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: '{% url "userside:search_products" %}',
+                data: {
+                    'query': query
+                },
+                dataType: 'json',
+                success: function (data) {
+                    // Handle the response here
+                    if (data.products) {
+                        // Update the UI with the search results
+                        var searchResults = $('#search-results');
+                        searchResults.empty(); // Clear previous results
+                        var table = $('<table>').addClass('table');
+                        var tableHead = $('<thead>').appendTo(table);
+                        var tableBody = $('<tbody>').appendTo(table);
+
+                        // Adding table headers
+                        var headers = ['Model Name', 'Color', 'Brand', 'Details'];
+                        var headRow = $('<tr>').appendTo(tableHead);
+                        headers.forEach(function (header) {
+                            $('<th>').text(header).appendTo(headRow);
+                        });
+
+                        // Adding table rows
+                        data.products.forEach(function (product) {
+                            var row = $('<tr>').appendTo(tableBody);
+                            $('<td>').text(product.modelname).appendTo(row);
+                            $('<td>').text(product.color).appendTo(row);
+                            $('<td>').text(product.brand).appendTo(row);
+                            var detailsButton = $('<a>').text('Product Details').attr('href', '/product/' + product.id + '/').addClass('btn btn-primary');
+                            $('<td>').append(detailsButton).appendTo(row);
+                        });
+
+
+                        searchResults.append(table);
+                    } else {
+                        // Handle the error
+                        console.log('No products found');
+                    }
+                },
+                error: function (data) {
+                    // Handle the error
+                    console.log('Error occurred');
+                }
+            });
+        });
+    });
+</script>

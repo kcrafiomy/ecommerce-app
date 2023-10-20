@@ -1,5 +1,7 @@
 {% extends 'navbar.html' %}
+
 {% block title %}Your Profile{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row">
@@ -16,29 +18,28 @@
                         <strong>Email:</strong> {{ user.email }}
                     </div>
                     <div class="mb-3">
-                        <strong>Address:</strong>
-                        <address>
-                            {{ customer.address1 }}<br>
-                            {{ customer.address2 }}<br>
-                        </address>
+                        <strong>Address 1:</strong> {{ customer.address1 }}
                     </div>
                     <div class="mb-3">
-                        {% if request.user.profile_image %}
-                            <img src="{{ customer.profile_image.url }}" alt="Profile Image">
-                        {% else %}
-                        <p>No profile image available.</p>
-                        {% endif %}
+                        <strong>Address 2:</strong> {{ customer.address2 }}
                     </div>
                 </div>
-                <a class=" btn btn-primary btn-sm " href="{% url 'userside:add_profile_data'%}">Edit Profile</a>
+                <div class="card-footer">
+                    <a href="{% url 'userside:add_profile_data' %}" class="btn btn-primary">Edit Profile</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-
+    
 
 
 {% endblock %}
+
+
+
+
+
+
+
 
 

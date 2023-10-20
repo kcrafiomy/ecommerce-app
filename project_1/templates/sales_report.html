@@ -1,0 +1,81 @@
+{% extends "admin_nav.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    
+    <div class="container mt-4">
+        <h2>Sales Report</h2>
+        <p>Total Sales: {{ total_sales }}</p>
+        <p>Last Month's Sales: {{ last_month_sales }}</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-8">
+                    <canvas id="salesChart" width="800" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+        <h3>Recent Orders</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Order Date</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.customer.username }}</td>
+                        <td>{{ order.order_date }}</td>
+                        <td>{{ order.total_price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <canvas id="salesChart" width="800" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var ctx = document.getElementById('salesChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Sales', "Last Month's Sales"],
+                    datasets: [{
+                        label: 'Sales Amount',
+                        data: [{{ total_sales }}, {{ last_month_sales }}],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

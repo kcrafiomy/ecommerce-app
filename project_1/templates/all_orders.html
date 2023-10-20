@@ -1,0 +1,36 @@
+
+{% extends "navbar.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Order List</h1>
+    <!-- Display orders here -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Total Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.order_date }}</td>
+                <td>{{ order.total_price }}</td>
+                <td>{{ order.get_order_status_display }}</td>
+                <td><a href="{% url 'userside:order_tracking' order.pk %}" class="btn btn-primary">Track Order</a>
+                <a href="{% url 'userside:cancel_order' order.pk  %}" class="btn btn-primary">cancel</a></td> 
+            </tr>
+           
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content%}

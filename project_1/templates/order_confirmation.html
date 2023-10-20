@@ -1,0 +1,50 @@
+<!-- order_confirmation.html -->
+
+{% extends 'navbar.html' %}
+
+{% block content %}
+
+<div class="container my-5">
+    <h2 class="text-center py-3">Order Confirmation Page</h2>
+    <h2 class="text-center py-3">Ordered Items:</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Product Image</th>
+                <th>Product Details</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+                <tr>
+                    <td>
+                        <img src="{{ item.product.image1.url }}" alt="{{ item.product.product_name }} Image" class="img-fluid rounded col-3">
+                    </td>
+                    <td>
+                        <h4>{{ item.product.brand }} - {{ item.product.modelname }}</h4>
+                        <p>Product Name: {{ item.product.product_name }}</p>
+                        <p>Storage: {{ item.product.storage }}</p>
+                        <p>Color: {{ item.product.color }}</p>
+                    </td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.product.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-center">Total Price: ₹{{ total_price }}</p>
+    <div class="text-center">
+        <form method="post" action="{% url 'userside:checkout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Confirm Order</button>
+        </form>
+        <a href="{% url 'userside:cart' %}" class="btn btn-danger my-2">Cancel</a>
+    </div>
+</div>
+
+{% endblock %}
+
+
+

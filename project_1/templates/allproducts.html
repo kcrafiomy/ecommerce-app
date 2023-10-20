@@ -1,23 +1,44 @@
 {% extends "admin_nav.html" %}
 
 {% block title %}All Products{% endblock %}
+
 {% block content %}
 <div class="container">
     <h1 class="mt-4">All Products</h1>
     {% for category in categories %}
     <div class="mt-4">
         <h2>{{ category.name }}s</h2>
-        <ul class="list-group">
-            {% for product in category.product_set.all %}
-            <li class="list-group-item">
-                {{ product.brand }} {{ product.modelname }} - {{ product.storage }}
-                <a href="{% url 'edit_data' product.id %}" class="btn btn-primary btn-sm ms-2">Edit</a>
-                <a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm">Delete</a>
-            </li>
-            {% endfor %}
-        </ul>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Brand</th>
+                    <th>Model Name</th>
+                    <th>Storage</th>
+                    <th>Category ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in category.product_set.all %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td><img src="{{ product.image1.url }}" style="max-width: 100px; max-height: 100px;"></td>
+                    <td>{{ product.brand }}</td>
+                    <td>{{ product.modelname }}</td>
+                    <td>{{ product.storage }}</td>
+                    <td>{{ product.category_id }}</td>
+                    <td>
+                        <a href="{% url 'edit_data' product.id %}" class="btn btn-primary btn-sm ms-2">Edit</a>
+                        <a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% endfor %}
 </div>
-{% endblock %}
 
+{% endblock %}

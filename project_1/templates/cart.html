@@ -1,37 +1,79 @@
 <!-- cart.html -->
-
 {% extends 'navbar.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-8">
-            <h2>Your Cart</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Total</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for cart_item in cart_items %}
-                    <tr>
-                        <td>{{cart_item.product.brand}} {{cart_item.product.modelname }}</td>
-                        <td>{{ cart_item.quantity }}</td>
-                        <td>₹ {{ cart_item.product.price }}</td>
-                        <td>₹ {{ cart_item.total_price }}</td>
-                        <td>
-                            <a href="{% url 'userside:remove_from_cart' cart_item.product.id %}" class="btn btn-danger btn-sm">Remove</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+<div class="container my-5" id="cart-container">
+    <h2 class="text-center py-5">Your Cart Page</h2>
+    <div class="text-center">
+        <div class="card w-100" id="cart-card">
+            <div class="card-body">
+                <h5 class="card-title">Browse Hot deals</h5>
+                <p class="card-text">Find the perfect used iPhone at unbeatable prices</p>
+                <a href="{% url 'userside:home' %}" class="btn btn-primary" id="cart-button">Button</a>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    #cart-container {
+        background-image: url('/static/images/корзина-в-женских-руках-изолированных-на-голубой-backgroundopy-spacebannershopping-189846567.webp'); /* Set the background image */
+        background-size: cover;
+        border: 2px solid #ccc; /* Add a border */
+        
+    }
+
+    #cart-card {
+        background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background for the card */
+    }
+
+    #cart-button {
+        background-color: #007bff; /* Button background color */
+        color: #fff; /* Button text color */
+    }
+</style>
+
+  
+ 
+<div class="container ">
+    <div class="row">
+        <div class="col-md-12">
+            
+            {% if cart_items %}
+            <section class="mobile-list">
+                <div class="container">
+                    <div class="row">
+                        {% for cart_item in cart_items %}
+                        <div class="col-md-4 col-sm-12">
+                            <div class="mobile-card my-3 text-center">
+                                <img src="{{ cart_item.product.image1.url }}" alt="{{ cart_item.product.brand }} {{ cart_item.product.modelname }}" class="img-fluid rounded col-12">
+                                <h2>{{ cart_item.product.brand }} - {{ cart_item.product.modelname }}</h2>
+                                <p>Storage : {{ cart_item.product.storage }}</p>
+                                <p>Color : {{ cart_item.product.color }}</p>
+                                <p>Price : ₹ {{ cart_item.product.price }}</p>
+                                <p>Quantity: <span id="quantity-{{ cart_item.product.id }}">{{ cart_item.quantity }}</span></p>
+                                <p>Total : ₹{{ cart_item.total_price }}</p>
+                                <a href="{% url 'userside:remove_from_cart' cart_item.product.id %}" class="btn btn-danger btn-sm">Remove From Cart</a>
+                                
+                                <button class="btn btn-success btn-sm increase-quantity" data-product-id="{{ cart_item.product.id }}">+</button>
+                                <button class="btn btn-warning btn-sm decrease-quantity" data-product-id="{{ cart_item.product.id }}">-</button>
+                                <a href="{% url 'userside:product' cart_item.product.id %}" class="btn-sm btn-primary btn">details</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+            <div class="col-12 text-center"><a href="{% url 'userside:checkout' %}" class="btn btn-primary mt-4 text-center">Checkout</a></div>
+            {% else %}
+            <h4>Your Cart Page is Empty......</h4>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% include "all_ajax.html" %}
+
 {% endblock %}
+

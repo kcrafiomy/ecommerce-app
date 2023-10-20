@@ -8,9 +8,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 my-4">
-                <div class="banner-text text-center">
-                    <h1 class="text-center my-5">Welcome to the Used iPhone Store</h1>
-                    <p class="text-center">Find the perfect used iPhone at unbeatable prices.</p>
+                <h1 class="text-center my-5" style="font-size: 36px; margin-bottom: 20px;">Welcome to the Used mobile Store</h1>
+                <p class="text-center" style="font-size: 18px;">Find the perfect used iPhone at unbeatable prices.</p>
+                <div class="banner-text text-center" style="background-image: url('/static/images/banner-image.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; padding: 100px 0; color: #fff; text-align: center;">
                 </div>
             </div>
         </div>
@@ -20,17 +20,20 @@
 <section class="mobile-list">
     <div class="container">
         <div class="row">
-            {% for product in product %}
-            <div class="col-md-4 col-sm-12 ">
-                <div class="mobile-card  my-3 text-center">
-                    <img src="{{ product.image1.url }}" alt="{{ product.brand }} {{ product.model_name }}" class="img-fluid rounded col-12">
-                    <h2>{{ product.brand }} - {{ product.modelname }}</h2>
-                    
-                    <p>Storage: {{ product.storage }}</p>
-                    <p>Color: {{ product.color }}</p>
-                    <p>Price:₹{{ product.price }}</p>
-                    <a href="{% url 'userside:product' product.id %}" class="btn btn-primary">Shop Now</a>
-                    <a href="{% url 'userside:add_to_cart' product.id %}" class="btn btn-primary">ADD To Cart</a>
+            {% for product in products %}
+            <div class="col-md-4 col-sm-12">
+                <div class="mobile-card my-3 text-center">
+                    <a href="{% url 'userside:product' product.product.id %}">
+                        <img src="{{ product.product.image1.url }}" alt="{{ product.product.brand }} {{ product.product.modelname }}" class="img-fluid rounded col-12">
+                    </a>
+                    <h2>{{ product.product.brand }} - {{ product.product.modelname }}</h2>
+                    <p>Storage: {{ product.product.storage }}</p>
+                    <p>Color: {{ product.product.color }}</p>
+                    <p> Price: ₹{{ product.original_price }}</p>
+                    <p>Now: ₹{{ product.discounted_price }}</p>
+                    <p id="success-message-{{ product.product.id }}" style="display: none;"></p>
+                    <a href="{% url 'userside:product' product.product.id %}" class="btn btn-primary">Details</a>
+                    <button class="add-to-cart-btn btn btn-primary" data-product-id="{{ product.product.id }}">Add to Cart</button>
                 </div>
             </div>
             {% endfor %}
@@ -38,5 +41,6 @@
     </div>
 </section>
 
+{% include "all_ajax.html" %}
 
 {% endblock %}

@@ -2,20 +2,24 @@
 {% extends "admin_nav.html" %}
 
 {% block title %}Dashboard{% endblock %}
+
 {% block content %}
+
 <div class="container">
     <h1 class="mt-4">All Users</h1>
-    <table class="table">
-        <thead>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
             <tr>
                 <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
                 <th>Address 1</th>
                 <th>Address 2</th>
-                <th>Profile Image</th>
-                <th>Payment Method</th>
-                <th>UPI ID</th>
+                <th>Active Status</th>
+                <th>Staf Status</th>
+                <th>Action</th>
+                
+
             </tr>
         </thead>
         <tbody>
@@ -26,13 +30,14 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.address1 }}</td>
                 <td>{{ user.address2 }}</td>
-                <td>{% if request.user.profile_image %}
-                <img src="{{ customer.profile_image.url }}" alt="Profile Image">
-            {% else %}
-            <p>No profile image available.</p>
-            {% endif %}</td>
-                <td>{{ user.paymentmethod.payment_method }}</td>
-                <td>{{ user.paymentmethod.upi_id }}</td>
+                <td>{{ user.is_active }}</td>
+                <td>{{ user.is_staff }}</td>
+                <td>
+                    <a href="{% url 'block_user' user.id %}" class="btn btn-danger">Block</a>
+                    <a href="{% url 'unblock_user' user.id %}" class="btn btn-success">Unblock</a>
+                    <a href="{% url 'make_superuser' user.id %}" class="btn btn-warning">Make Superuser</a>
+                    <a href="{% url 'remove_superuser' user.id %}" class="btn btn-danger">remove Superuser</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

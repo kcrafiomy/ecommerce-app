@@ -1,13 +1,13 @@
-
-
 {% extends "admin_nav.html" %}
 
 {% block title %}Dashboard{% endblock %}
+
 {% block content %}
+
 <div class="container-fluid mt-4">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3  d-md-block bg-light sidebar">
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
             <div class="position-sticky">
                 <h4>Category</h4>
                 <ul class="nav flex-column">
@@ -26,8 +26,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'dataadd'%}">Add Products</a>
                     </li>
-                    
                 </ul>
+                <h4>Supplier</h4>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'add_supplier'%}">Add supplier</a>
@@ -35,12 +35,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'supplier_list'%}">All supplier</a>
                     </li>
-                    
                 </ul>
-                <h4>Orders</h4>
+                <h4>Discount</h4>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">All Orders</a>
+                        <a class="nav-link" href="{% url 'discount_coupon'%}">Add Card</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'discount_coupon'%}">Show Cards</a>
                     </li>
                 </ul>
                 <!-- Other sidebar items -->
@@ -48,22 +50,45 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <button class="btn btn-light btn-lg col-5 m-2">totel sale</button>
-            <button class="btn btn-light btn-lg col-5 m-2">totel sale</button>
-            <button class="btn btn-light btn-lg col-5 m-2">totel sale</button>
-            <button class="btn btn-light btn-lg col-5 m-2">totel sale</button>
-            
-            <!-- Banner, Discount, and more sections -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="row">
+                <div class="col-md-6 my-3">
+                    <div class="card m-2 p-3">
+                        <h5>Total Sale Amount</h5>
+                        <p>{{total_sale_amount}}</p> <!-- Replace with actual value -->
+                    </div>
+                </div>
+                <div class="col-md-6 my-3">
+                    <div class="card m-2 p-3">
+                        <h5>Total Users</h5>
+                        <p>{{total_users}}</p> <!-- Replace with actual value -->
+                    </div>
+                </div>
+                <div class="col-md-6 my-3">
+                    <div class="card m-2 p-3">
+                        <h5>Total Products</h5>
+                        <p>{{total_products}}</p> <!-- Replace with actual value -->
+                    </div>
+                </div>
+                <div class="col-md-6 my-3">
+                    <div class="card m-2 p-3">
+                        <h5>Total Delivered Orders</h5>
+                        <p>{{total_delivered_orders}}</p> <!-- Replace with actual value -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <a class="btn btn-light btn-lg col-5 m-2" href="{% url 'delivery'%}">All Orders</a>
+                <a class="btn btn-light btn-lg col-5 m-2" href="{% url 'discount_coupon'%}">Discount Section</a>
+                <a class="btn btn-light btn-lg col-5 m-2" href="{% url 'all_users'%}">All User</a>
+                <a class="btn btn-light btn-lg col-5 m-2" href="{% url 'sales_report'%}">Sale Report</a>
+            </div>
         </main>
-        
-        
     </div>
 </div>
 
-
-
 {% endblock %}
+
 
 
 
